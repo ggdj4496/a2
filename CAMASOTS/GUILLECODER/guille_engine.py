@@ -12,6 +12,32 @@ from typing import List, Dict, Any, Optional
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
+
+def _find_python_executable() -> str:
+    """
+    Busca el ejecutable Python correcto en orden de prioridad:
+    1. Entorno virtual venv del proyecto
+    2. Python en PATH (python.exe)
+    3. Python311 en Program Files
+    """
+    possible_paths = [
+        # Entorno virtual del proyecto
+        os.path.join(os.environ.get('CAMASOTS_ROOT', r"C:\a2\CAMASOTS"), "venv", "Scripts", "python.exe"),
+        r"C:\a2\CAMASOTS\venv\Scripts\python.exe",
+        # Python 3.11
+        r"C:\Program Files\Python311\python.exe",
+        r"C:\Program Files (x86)\Python311\python.exe",
+        # Python en PATH
+        "python.exe"
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    
+    # Si no encuentra ninguno, usar el actual
+    return sys.executable
+
 # ====================================================================
 # GUILLECODER MASTER AGENT x2 - SUPREME PROGRAMMING ENGINE
 # Calidad de Procesado x2: Razonamiento Senior Master + Auditoría de Drivers
@@ -243,4 +269,15 @@ def start_supreme_ui():
     webview.start(debug=False)
 
 if __name__ == "__main__":
+    # Verificar Python disponible al inicio
+    python_path = _find_python_executable()
+    print(f"[SISTEMA] Python detectado: {python_path}", flush=True)
+    print(f"[SISTEMA] Ejecutable actual: {sys.executable}", flush=True)
+    
+    # Verificar si estamos en el venv correcto
+    expected_venv = os.path.join(os.environ.get('CAMASOTS_ROOT', r"C:\a2\CAMASOTS"), "venv", "Scripts", "python.exe")
+    if sys.executable.lower() != expected_venv.lower() and os.path.exists(expected_venv):
+        print(f"[WARNING] Se recomienda ejecutar con: {expected_venv}", flush=True)
+        print(f"[WARNING] O establece la variable: set CAMASOTS_ROOT=C:\\a2\\CAMASOTS", flush=True)
+    
     start_supreme_ui()
