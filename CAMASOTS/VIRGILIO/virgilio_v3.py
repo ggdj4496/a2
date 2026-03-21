@@ -182,7 +182,7 @@ def start_virgilio_ui():
         height=850,
         background_color='#010409'
     )
-    webview.start(debug=True)
+    webview.start(debug=False)
 
 if __name__ == "__main__":
     start_virgilio_ui()
@@ -280,5 +280,133 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     start_virgilio_ui()
+
+
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=False)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
 
 
