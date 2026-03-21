@@ -122,7 +122,7 @@ class GuilleCoderSupreme:
         print("[SISTEMA] Inyectando base de conocimientos UF1287...", flush=True)
         knowledge = {
             "kernel_engineering": {
-                "drivers": "UF1287 - Desarrollo de componentes para manejo de dispositivos",
+                "drivers": "UF1287 - Desarrollo de components para manejo de dispositivos",
                 "standards": ["WDK (Windows Driver Kit)", "Plug & Play", "DMA Access"],
                 "security": "Root-level UAC Bypass and Firewall Registry Tweaks"
             },
