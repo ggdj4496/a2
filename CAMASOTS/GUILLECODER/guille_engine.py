@@ -276,7 +276,9 @@ if __name__ == "__main__":
     
     # Verificar si estamos en el venv correcto
     expected_venv = os.path.join(os.environ.get('CAMASOTS_ROOT', r"C:\a2\CAMASOTS"), "venv", "Scripts", "python.exe")
-    if sys.executable.lower() != expected_venv.lower() and os.path.exists(expected_venv):
+    # Usar python_path (el venv detectado) vs sys.executable (el actual)
+    if python_path.lower() != sys.executable.lower() and os.path.exists(expected_venv):
+        print(f"[WARNING] El entorno virtual no está activo.", flush=True)
         print(f"[WARNING] Se recomienda ejecutar con: {expected_venv}", flush=True)
         print(f"[WARNING] O establece la variable: set CAMASOTS_ROOT=C:\\a2\\CAMASOTS", flush=True)
     
