@@ -8,12 +8,29 @@ import webview
 import threading
 import psutil
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # ====================================================================
 # GUILLECODER MASTER AGENT x2 - SUPREME PROGRAMMING ENGINE
 # Calidad de Procesado x2: Razonamiento Senior Master + Auditoría de Drivers
 # ====================================================================
+
+
+def create_session_with_retries(retries: int = 3, backoff_factor: float = 0.5) -> requests.Session:
+    """Crea una sesión requests con retry automático para mayor robustez."""
+    session = requests.Session()
+    retry_strategy = Retry(
+        total=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=[429, 500, 502, 503, 504],
+    )
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
 
 class GuilleCoderSupreme:
     def __init__(self):
@@ -25,14 +42,21 @@ class GuilleCoderSupreme:
         )
         self.logger = logging.getLogger("GuilleSupreme")
         
-        self.root_dir = r"C:\a2\CAMASOTS"
+        # Detección automática de paths - Fallback a ubicación del archivo
+        # Usa variable de entorno CAMASOTS_ROOT o detecta automáticamente
+        self.root_dir = os.environ.get('CAMASOTS_ROOT', 
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.base_dir = os.path.join(self.root_dir, "GUILLECODER")
         self.db_path = os.path.join(self.root_dir, "DATABASE", "GUILLECODER", "guille_knowledge.json")
         self.env_path = os.path.join(self.root_dir, "PUENTE", "caja_fuerte.env")
         
+        # Crear sesión con retry para API calls
+        self.http_session = create_session_with_retries()
+        
         # El "print" en Python con -u (unbuffered) es la forma más segura de enviar logs a la master_interface
         print("[SISTEMA] >>> GUILLECODER SUPREME x2 INICIANDO... <<<", flush=True)
         print(f"[SISTEMA] Fecha/Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
+        print(f"[SISTEMA] Directorio raíz detectado: {self.root_dir}", flush=True)
         
         self._load_credentials()
         self._inject_supreme_knowledge()
@@ -55,9 +79,14 @@ class GuilleCoderSupreme:
         if os.path.exists(self.env_path):
             with open(self.env_path, 'r', encoding='utf-8') as f:
                 for line in f:
-                    if '=' in line:
+                    if '=' in line and not line.strip().startswith('#'):
                         k, v = line.split('=', 1)
-                        self.apis[k.strip()] = v.strip()
+                        key = k.strip()
+                        value = v.strip()
+                        # Ocultar valor en logs por seguridad
+                        masked_value = f"{value[:4]}***" if len(value) > 4 else "***"
+                        print(f"[SISTEMA] API '{key}' detectada: {masked_value}", flush=True)
+                        self.apis[key] = value
             print(f"[SISTEMA] {len(self.apis)} APIs detectadas.", flush=True)
         else:
             print("[ALERTA] Caja fuerte no encontrada en PUENTE/caja_fuerte.env", flush=True)
@@ -82,11 +111,26 @@ class GuilleCoderSupreme:
             }
         }
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+        
+        # Merge con datos existentes si los hay
+        existing_data = {}
+        if os.path.exists(self.db_path):
+            try:
+                with open(self.db_path, 'r', encoding='utf-8') as f:
+                    existing_data = json.load(f)
+                # Merge strategy: preservar datos existentes
+                for key, value in knowledge.items():
+                    if key not in existing_data:
+                        existing_data[key] = value
+                knowledge = existing_data
+            except Exception as e:
+                print(f"[SISTEMA] Warning: No se pudo mergeear DB existente: {e}", flush=True)
+        
         with open(self.db_path, 'w', encoding='utf-8') as f:
             json.dump(knowledge, f, indent=4)
         print("[SISTEMA] Base de conocimientos actualizada.", flush=True)
 
-    def process_supreme_query(self, prompt: str):
+    def process_supreme_query(self, prompt: str) -> str:
         """Procesado de calidad x2 usando múltiples APIs en paralelo."""
         print(f"[CONSULTA] Procesando requerimiento: {prompt[:50]}...", flush=True)
         
@@ -106,13 +150,28 @@ class GuilleCoderSupreme:
                 ],
                 "temperature": 0.1
             }
-            resp = requests.post("https://api.deepseek.com/v1/chat/completions", json=payload, headers=headers, timeout=60)
+            
+            # Usar sesión con retry en lugar de requests.post directo
+            resp = self.http_session.post(
+                "https://api.deepseek.com/v1/chat/completions", 
+                json=payload, 
+                headers=headers, 
+                timeout=60
+            )
+            
             if resp.status_code == 200:
                 print("[IA] Respuesta recibida con éxito.", flush=True)
                 return resp.json()['choices'][0]['message']['content']
             
             print(f"[ERROR] API retornó código {resp.status_code}", flush=True)
             return f"Error en motor x2: {resp.status_code}"
+            
+        except requests.exceptions.Timeout:
+            print("[ERROR] Timeout en conexión con IA (60s excedidos)", flush=True)
+            return "Error: Timeout en motor de IA"
+        except requests.exceptions.ConnectionError:
+            print("[ERROR] Error de conexión con IA", flush=True)
+            return "Error: Sin conexión a internet"
         except Exception as e:
             print(f"[CRÍTICO] Fallo en conexión IA: {e}", flush=True)
             return f"Fallo Crítico Supreme: {e}"
@@ -166,17 +225,22 @@ def start_supreme_ui():
                 cons.innerHTML += `<div class="log-entry"><span style="color: var(--accent);">>>> </span>${val}</div>`;
                 box.value = '';
                 
-                const res = await pywebview.api.process_supreme_query(val);
-                cons.innerHTML += `<div class="log-entry" style="color: #00ff00;">${res}</div>`;
-                cons.scrollTop = cons.scrollHeight;
+                try {
+                    const res = await pywebview.api.process_supreme_query(val);
+                    cons.innerHTML += `<div class="log-entry" style="color: #00ff00;">${res}</div>`;
+                    cons.scrollTop = cons.scrollHeight;
+                } catch (e) {
+                    cons.innerHTML += `<div class="log-entry" style="color: #ff0055;">Error: ${e}</div>`;
+                }
             }
         </script>
     </body>
     </html>
     """
     
+    # Debug mode desactivado para producción
     webview.create_window('GUILLECODER SUPREME x2', html=html, js_api=engine, width=1300, height=900, background_color='#0a0a0a')
-    webview.start(debug=True)
+    webview.start(debug=False)
 
 if __name__ == "__main__":
     start_supreme_ui()
