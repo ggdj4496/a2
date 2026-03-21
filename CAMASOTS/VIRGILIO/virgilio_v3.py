@@ -15,15 +15,15 @@ import webview
 
 class VirgilioMaster:
     def __init__(self):
-        self.root_dir = r"C:\a2\CAMASOTS"
+        self.root_dir = os.environ.get('CAMASOTS_ROOT', os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         self.base_dir = os.path.join(self.root_dir, "VIRGILIO")
         self.puente_dir = os.path.join(self.root_dir, "PUENTE")
         self.logger = logging.getLogger("VirgilioMaster")
-        
+
         # Configuración DMX (Simulada para QLC+)
-        self.dmx_port = "COM3"
-        self.qlc_path = r"C:\Program Files\QLC+\qlcplus.exe"
-        
+        self.dmx_port = os.environ.get('DMX_PORT', "COM3")
+        self.qlc_path = os.environ.get('QLC_PATH', r"C:\Program Files\QLC+\qlcplus.exe")
+
         self.logger.info("Virgilio Master v3.0 Inicializado.")
 
     def get_system_status(self):
@@ -38,8 +38,40 @@ class VirgilioMaster:
     def execute_root_command(self, cmd: str):
         """Ejecuta comandos con privilegios elevados vía PUENTE."""
         self.logger.info(f"Ejecutando comando Root: {cmd}")
-        # Aquí se integraría con el bypass de UAC del PUENTE
-        return f"Comando '{cmd}' ejecutado en modo Super-Usuario."
+        try:
+            if cmd == 'purge_temp_files':
+                # Implement purge temp files
+                temp_dirs = [os.environ.get('TEMP', 'C:\\Temp'), 'C:\\Windows\\Temp']
+                deleted_files = 0
+                for temp_dir in temp_dirs:
+                    if os.path.exists(temp_dir):
+                        for root, dirs, files in os.walk(temp_dir):
+                            for file in files:
+                                try:
+                                    os.remove(os.path.join(root, file))
+                                    deleted_files += 1
+                                except:
+                                    pass
+                return f"Purged {deleted_files} temporary files."
+            elif cmd.startswith('runas '):
+                # Attempt to run command as admin using runas
+                actual_cmd = cmd[6:]  # remove 'runas '
+                result = subprocess.run(['runas', '/user:Administrator', 'cmd', '/c', actual_cmd],
+                                      capture_output=True, text=True, timeout=30)
+                if result.returncode == 0:
+                    return result.stdout
+                else:
+                    return f"Error: {result.stderr}"
+            else:
+                # Default: run with shell=True (caution: security risk)
+                result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=30)
+                if result.returncode == 0:
+                    return result.stdout
+                else:
+                    return f"Error: {result.stderr}"
+        except Exception as e:
+            self.logger.error(f"Error executing root command: {e}")
+            return f"Failed to execute: {e}"
 
     def control_dmx_fixture(self, channel: int, value: int):
         """Envía valores DMX a través del puerto configurado."""
@@ -154,3 +186,99 @@ def start_virgilio_ui():
 
 if __name__ == "__main__":
     start_virgilio_ui()
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+            async function launchQLC() {
+                log("Iniciando QLC+ Engine...");
+                const res = await pywebview.api.launch_qlc_plus();
+                log(res);
+            }
+
+            async function runRoot() {
+                log("Ejecutando optimización de privilegios...");
+                const res = await pywebview.api.execute_root_command('purge_temp_files');
+                log(res);
+            }
+
+            setInterval(updateStats, 2000);
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'VIRGILIO MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=master, 
+        width=1100, 
+        height=850,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_virgilio_ui()
+
+

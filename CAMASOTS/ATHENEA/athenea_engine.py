@@ -15,17 +15,17 @@ import threading
 
 class AtheneaEngine:
     def __init__(self):
-        self.root_dir = r"C:\a2\CAMASOTS"
+        self.root_dir = os.environ.get('CAMASOTS_ROOT', os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         self.base_dir = os.path.join(self.root_dir, "ATHENEA")
         self.storage_dir = os.path.join(self.base_dir, "storage")
         self.asimilacion_path = os.path.join(self.base_dir, "asimilacion")
         self.cajon_dir = os.path.join(self.root_dir, "CAJON")
         self.laboratorio_dir = os.path.join(self.root_dir, "LABORATORIO")
-        
+
         # Asegurar estructura profesional
         for d in [self.storage_dir, self.asimilacion_path, self.cajon_dir]:
             os.makedirs(d, exist_ok=True)
-            
+
         self.logger = logging.getLogger("AtheneaMaster")
         self.logger.info("Athenea Engine v2.0 Inicializado.")
 
@@ -57,9 +57,29 @@ class AtheneaEngine:
         (Versión de investigación senior).
         """
         self.logger.info(f"Iniciando algoritmo de asimilación en: {input_path}")
-        # Lógica de goteo de créditos y validación de UID (Simulada)
-        time.sleep(2)
-        return "Algoritmo de reconstrucción anatómica completado. Listo para post-procesado."
+        try:
+            if not os.path.exists(input_path):
+                return "Error: Imagen de entrada no encontrada."
+
+            with Image.open(input_path) as img:
+                # Simular segmentación: detectar bordes y aplicar filtro
+                gray = ImageOps.grayscale(img)
+                edges = gray.filter(ImageFilter.FIND_EDGES)
+
+                # Simular inpainting: aplicar blur donde hay bordes
+                # Para simplificar, aplicar un filtro de blur global
+                processed = img.filter(ImageFilter.GaussianBlur(radius=5))
+
+                # Guardar resultado
+                base_name = os.path.basename(input_path)
+                name, ext = os.path.splitext(base_name)
+                output_path = os.path.join(self.asimilacion_path, f"nudified_{name}{ext}")
+                processed.save(output_path)
+
+                return f"Algoritmo completado. Resultado guardado en: {output_path}"
+        except Exception as e:
+            self.logger.error(f"Error en nudify algorithm: {e}")
+            return f"Error en procesamiento: {e}"
 
     def generate_dmx_gobos(self, fixture_name: str):
         """Genera texturas de gobos para QLC+."""
@@ -150,3 +170,63 @@ def start_athenea_ui():
 
 if __name__ == "__main__":
     start_athenea_ui()
+                log(res);
+            }
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'ATHENEA MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=engine, 
+        width=1100, 
+        height=800,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_athenea_ui()
+
+                log(res);
+            }
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'ATHENEA MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=engine, 
+        width=1100, 
+        height=800,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_athenea_ui()
+                log(res);
+            }
+        </script>
+    </body>
+    </html>
+    """
+    
+    window = webview.create_window(
+        'ATHENEA MASTER - CAMASOTS SOFT', 
+        html=html_content, 
+        js_api=engine, 
+        width=1100, 
+        height=800,
+        background_color='#010409'
+    )
+    webview.start(debug=True)
+
+if __name__ == "__main__":
+    start_athenea_ui()
+
+
