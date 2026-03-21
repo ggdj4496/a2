@@ -1,0 +1,24 @@
+{
+    "kernel_engineering": {
+        "drivers": "UF1287 - Desarrollo de componentes para manejo de dispositivos",
+        "standards": [
+            "WDK (Windows Driver Kit)",
+            "Plug & Play",
+            "DMA Access"
+        ],
+        "security": "Root-level UAC Bypass and Firewall Registry Tweaks"
+    },
+    "ia_processing_x2": {
+        "engine": "DeepSeek-Coder-V2 + Gemini-1.5-Pro Sync",
+        "methodology": "Chain-of-Thought Senior Master",
+        "refactoring": [
+            "Abstraction",
+            "Composition",
+            "Magic Number Elimination"
+        ]
+    },
+    "system_integration": {
+        "sync": "Walkie-Talkie Mode via Telegram Bridge",
+        "persistence": "24/7 Evolutive Memory RAG"
+    }
+}
